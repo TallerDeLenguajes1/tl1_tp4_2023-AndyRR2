@@ -11,15 +11,18 @@ struct Tarea{
 void cargarTarea(struct Tarea **tareasP, int num);
 void mostrarTarea(struct Tarea **tareasP, int num);
 void realizarTarea(struct Tarea **tareasP,struct Tarea **tareasR, int num, int num2);
+struct Tarea* buscarTarea(struct Tarea **tareas, int num, char *palabra);
 
 int main(){
-    int cant, num, num2, estado;
+    int cant, num, num2, estado, ID;
+    char *palabra=NULL;
+    struct Tarea *porID=NULL;
+    struct Tarea *porPalabra=NULL;
     struct Tarea **tareasP=NULL;
     struct Tarea **tareasR=NULL;
     printf("Entre la cantidad de tareas: ");
     scanf("%d",&cant);
     fflush(stdin);
-    
     tareasP=(struct Tarea **)malloc(cant * sizeof(struct Tarea*));
     
     for (int i = 0; i < cant; i++){
@@ -40,6 +43,7 @@ int main(){
         printf("Tarea #%d:\n",i+1);
         printf("1-Realizada, 0-Pendiente: \n"),
         scanf("%d",&estado);
+        fflush(stdin);
         if (estado==1){
             tareasR=(struct Tarea **)malloc((j+1) * sizeof(struct Tarea*));
             realizarTarea(tareasP,tareasR,i,j);
@@ -66,7 +70,28 @@ int main(){
         }
     }
     printf("\n");
-
+    
+    printf("Entre la palabra a buscar: ");
+    palabra=(char*)malloc(20*sizeof(char));
+    gets(palabra);
+    puts(palabra);
+    
+    //porID=(struct Tarea*)malloc(1*sizeof(struct Tarea));
+    porPalabra=buscarTarea(tareasP,cant,palabra);
+    if (porPalabra!=NULL){
+        printf("Tarea buscada: \n");
+        printf("ID: %d\n",porPalabra->TareaID);
+        printf("Descripcion: ");
+        puts(porPalabra->Descripcion);
+        printf("Duracion: %d\n",porPalabra->Duracion);
+    }else{
+        printf("Tarea no encontrada\n");
+    }
+    
+    
+    
+    free(porPalabra);
+    free(porID);
     free(tareasP);
     free(tareasR);
     return(0);
@@ -102,4 +127,15 @@ void realizarTarea(struct Tarea **tareasP, struct Tarea **tareasR, int num, int 
    tareasR[num2]=(struct Tarea*)malloc(sizeof(struct Tarea));
    tareasR[num2]=tareasP[num];
    tareasP[num]=NULL;
+}
+
+struct Tarea* buscarTarea(struct Tarea **tareas, int num, char *palabra){
+   for (int i = 0; i < num; i++){
+    if (tareas[i]!=NULL){
+        if (strstr(tareas[i]->Descripcion, palabra) != NULL){
+        return(tareas[i]);
+        }
+    }
+   }
+return NULL;
 }
