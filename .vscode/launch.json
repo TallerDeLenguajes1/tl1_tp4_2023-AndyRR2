@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Taller1/tl1_tp3_2023-AndyRR2",
-      "program": "c:/Taller1/tl1_tp3_2023-AndyRR2/build/Debug/outDebug",
+      "cwd": "c:/Taller1/tl1_tp4-5_2023-AndyRR2",
+      "program": "c:/Taller1/tl1_tp4-5_2023-AndyRR2/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
