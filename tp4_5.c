@@ -11,7 +11,8 @@ struct Tarea{
 void cargarTarea(struct Tarea **tareasP, int num);
 void mostrarTarea(struct Tarea **tareasP, int num);
 void realizarTarea(struct Tarea **tareasP,struct Tarea **tareasR, int num, int num2);
-struct Tarea* buscarTarea(struct Tarea **tareas, int num, char *palabra);
+struct Tarea* buscarTareaPalabra(struct Tarea **tareas, int num, char *palabra);
+struct Tarea* buscarTareaID(struct Tarea **tareas, int num, int ID);
 
 int main(){
     int cant, num, num2, estado, ID;
@@ -75,11 +76,9 @@ int main(){
     palabra=(char*)malloc(20*sizeof(char));
     gets(palabra);
     puts(palabra);
-    
-    //porID=(struct Tarea*)malloc(1*sizeof(struct Tarea));
-    porPalabra=buscarTarea(tareasP,cant,palabra);
+    porPalabra=buscarTareaPalabra(tareasP,cant,palabra);
     if (porPalabra!=NULL){
-        printf("Tarea buscada: \n");
+        printf("Tarea buscada por palabra: \n");
         printf("ID: %d\n",porPalabra->TareaID);
         printf("Descripcion: ");
         puts(porPalabra->Descripcion);
@@ -87,8 +86,20 @@ int main(){
     }else{
         printf("Tarea no encontrada\n");
     }
-    
-    
+
+    printf("Entre un ID a buscar: ");
+    scanf("%d",&ID);
+    fflush(stdin);
+    porID=buscarTareaID(tareasP,cant,ID);
+    if (porID!=NULL){
+        printf("Tarea buscada por ID: \n");
+        printf("ID: %d\n",porID->TareaID);
+        printf("Descripcion: ");
+        puts(porID->Descripcion);
+        printf("Duracion: %d\n",porID->Duracion);
+    }else{
+        printf("Tarea no encontrada\n");
+    }
     
     free(porPalabra);
     free(porID);
@@ -129,10 +140,21 @@ void realizarTarea(struct Tarea **tareasP, struct Tarea **tareasR, int num, int 
    tareasP[num]=NULL;
 }
 
-struct Tarea* buscarTarea(struct Tarea **tareas, int num, char *palabra){
+struct Tarea* buscarTareaPalabra(struct Tarea **tareas, int num, char *palabra){
    for (int i = 0; i < num; i++){
     if (tareas[i]!=NULL){
         if (strstr(tareas[i]->Descripcion, palabra) != NULL){
+            return(tareas[i]);
+        }
+    }
+   }
+return NULL;
+}
+
+struct Tarea* buscarTareaID(struct Tarea **tareas, int num, int ID){
+   for (int i = 0; i < num; i++){
+    if (tareas[i]!=NULL){
+        if (tareas[i]->TareaID==ID){
         return(tareas[i]);
         }
     }
