@@ -15,7 +15,7 @@ struct Tarea* buscarTareaPalabra(struct Tarea **tareas, int num, char *palabra);
 struct Tarea* buscarTareaID(struct Tarea **tareas, int num, int ID);
 
 int main(){
-    int cant, num, num2, estado, ID;
+    int cant, num, num2, estado, ID, consulta, IdOPal, PendORea;
     char *palabra=NULL;
     struct Tarea *porID=NULL;
     struct Tarea *porPalabra=NULL;
@@ -25,7 +25,8 @@ int main(){
     scanf("%d",&cant);
     fflush(stdin);
     tareasP=(struct Tarea **)malloc(cant * sizeof(struct Tarea*));
-    
+    tareasR=(struct Tarea **)malloc(cant * sizeof(struct Tarea*));
+
     for (int i = 0; i < cant; i++){
         printf("Tarea #%d: \n",i+1);
         cargarTarea(tareasP,i);
@@ -46,7 +47,7 @@ int main(){
         scanf("%d",&estado);
         fflush(stdin);
         if (estado==1){
-            tareasR=(struct Tarea **)malloc((j+1) * sizeof(struct Tarea*));
+            //tareasR=(struct Tarea **)malloc((j+1) * sizeof(struct Tarea*));
             realizarTarea(tareasP,tareasR,i,j);
             j++;
         }
@@ -55,7 +56,6 @@ int main(){
 
     printf("Tareas realizadas: \n");
     for (int i = 0; i < j; i++){
-        printf("Tarea #%d: \n",i+1);
         printf("ID: %d\n",tareasR[i]->TareaID);
         printf("Descripcion: ");
         puts(tareasR[i]->Descripcion);
@@ -63,42 +63,67 @@ int main(){
     }
     printf("\n");
 
-    printf("Tareas pendientesa actualizadas: \n");
+    printf("Tareas pendientes actualizadas: \n");
     for (int i = 0; i < cant; i++){
         if (tareasP[i]!=NULL){
-            printf("Tarea #%d: \n",i+1);
             mostrarTarea(tareasP,i);
         }
     }
     printf("\n");
     
-    printf("Entre la palabra a buscar: ");
-    palabra=(char*)malloc(20*sizeof(char));
-    gets(palabra);
-    puts(palabra);
-    porPalabra=buscarTareaPalabra(tareasP,cant,palabra);
-    if (porPalabra!=NULL){
-        printf("Tarea buscada por palabra: \n");
-        printf("ID: %d\n",porPalabra->TareaID);
-        printf("Descripcion: ");
-        puts(porPalabra->Descripcion);
-        printf("Duracion: %d\n",porPalabra->Duracion);
-    }else{
-        printf("Tarea no encontrada\n");
-    }
-
-    printf("Entre un ID a buscar: ");
-    scanf("%d",&ID);
+    printf("Consultar tareas(1-Si,2-No): ");
+    scanf("%d",&consulta);
     fflush(stdin);
-    porID=buscarTareaID(tareasP,cant,ID);
-    if (porID!=NULL){
-        printf("Tarea buscada por ID: \n");
-        printf("ID: %d\n",porID->TareaID);
-        printf("Descripcion: ");
-        puts(porID->Descripcion);
-        printf("Duracion: %d\n",porID->Duracion);
-    }else{
-        printf("Tarea no encontrada\n");
+    while (consulta==1&&consulta!=0){
+        printf("Consultar de las realizadas(1) o pendientes(0): ");
+        scanf("%d",&PendORea);
+        fflush(stdin);
+        printf("Consultar por ID(1) o por Palabra(0): ");
+        scanf("%d",&IdOPal);
+        fflush(stdin);
+        switch (IdOPal){
+        case 0:
+            printf("Entre la palabra a buscar: ");
+            palabra=(char*)malloc(20*sizeof(char));
+            gets(palabra);
+            puts(palabra);
+            switch (PendORea){
+            case 0:porPalabra=buscarTareaPalabra(tareasP,cant,palabra);break;
+            case 1:porPalabra=buscarTareaPalabra(tareasR,cant,palabra);break;
+            }
+            if (porPalabra!=NULL){
+                printf("Tarea buscada por palabra: \n");
+                printf("ID: %d\n",porPalabra->TareaID);
+                printf("Descripcion: ");
+                puts(porPalabra->Descripcion);
+                printf("Duracion: %d\n",porPalabra->Duracion);
+            }else{
+                printf("Tarea no encontrada\n");
+            }
+        break;
+        case 1:
+            printf("Entre un ID a buscar: ");
+            scanf("%d",&ID);
+            fflush(stdin);
+            switch (PendORea){
+            case 0:porID=buscarTareaID(tareasP,cant,ID);break;
+            case 1:porID=buscarTareaID(tareasR,cant,ID);break;
+            }
+            if (porID!=NULL){
+                printf("Tarea buscada por ID: \n");
+                printf("ID: %d\n",porID->TareaID);
+                printf("Descripcion: ");
+                puts(porID->Descripcion);
+                printf("Duracion: %d\n",porID->Duracion);
+            }else{
+                printf("Tarea no encontrada\n");
+            }   
+        break;
+        default:printf("Entre una opcion correcta\n");break;
+        } 
+        printf("Consultar otra tarea(1-Si,2-No): ");
+        scanf("%d",&consulta);
+        fflush(stdin);
     }
     
     free(porPalabra);
@@ -134,7 +159,6 @@ void mostrarTarea(struct Tarea **tareasP, int num){
 }
 
 void realizarTarea(struct Tarea **tareasP, struct Tarea **tareasR, int num, int num2){
-   tareasR[num2]=NULL;
    tareasR[num2]=(struct Tarea*)malloc(sizeof(struct Tarea));
    tareasR[num2]=tareasP[num];
    tareasP[num]=NULL;
